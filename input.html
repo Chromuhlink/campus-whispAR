@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Post a Whisper - Campus WhispAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      position: relative;
+    }
+
+    .input-prompt {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 25px;
+      line-height: 1.3;
+      text-align: center;
+      color: white;
+      width: 275px;
+    }
+
+    .message-input-wrapper {
+      position: fixed;
+      bottom: 56px;
+      left: 24px;
+      right: 24px;
+    }
+
+    .message-input-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #292929;
+      border: 1px solid #cccccc;
+      border-radius: 8px;
+      padding: 8px 16px;
+      height: 40px;
+    }
+
+    .message-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      color: white;
+      line-height: 20px;
+    }
+
+    .message-input::placeholder {
+      color: #cccccc;
+    }
+
+    .send-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+    }
+
+    .send-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: #cccccc;
+      fill: none;
+      transition: stroke 0.2s;
+    }
+
+    .send-button:active svg {
+      stroke: white;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: #cccccc;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .back-link:active {
+      color: white;
+    }
+  </style>
+</head>
+<body class="input-screen">
+  <a href="home.html" class="back-link">← Back</a>
+
+  <p class="input-prompt">Whisper something new to the wall today.</p>
+
+  <div class="message-input-wrapper">
+    <div class="message-input-box">
+      <input
+        type="text"
+        class="message-input"
+        id="messageInput"
+        placeholder="Send message..."
+        maxlength="280"
+        autocomplete="off"
+      >
+      <button class="send-button" id="sendButton">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+
+    function sendMessage() {
+      const message = messageInput.value.trim();
+
+      if (message) {
+        // Store message temporarily (will be saved to Firebase later)
+        localStorage.setItem('pendingMessage', message);
+
+        // Navigate to sent page
+        window.location.href = 'sent.html';
+      }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Focus input on load
+    messageInput.focus();
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>WhispAR Board - Campus WhispAR</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Josefin Sans', sans-serif;
+    }
+
+    /* Header */
+    .ar-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 20px;
+      background: rgba(41, 41, 41, 0.8);
+    }
+
+    .back-button {
+      position: absolute;
+      left: 20px;
+      background: none;
+      border: none;
+      color: #cccccc;
+      font-size: 16px;
+      font-family: 'Josefin Sans', sans-serif;
+      cursor: pointer;
+      padding: 5px;
+      text-decoration: none;
+    }
+
+    .back-button:active {
+      color: white;
+    }
+
+    .ar-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 1px;
+    }
+
+    /* Scanning hint */
+    .scan-hint {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(41, 41, 41, 0.8);
+      color: #cccccc;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 1000;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="ar-header">
+    <a href="home.html" class="back-button">← Back</a>
+    <span class="ar-title">WhispAR</span>
+  </div>
+
+  <!-- Scan hint -->
+  <div class="scan-hint" id="scanHint">
+    Point camera at anchor image
+  </div>
+
+  <!-- AR Scene -->
+  <a-scene
+    mindar-image="imageTargetSrc: assets/targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no; filterMinCF: 0.0001; filterBeta: 0.01;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+
+    <a-assets>
+      <a-asset-item id="model" src="assets/-y5g7kt-222007844.glb"></a-asset-item>
+    </a-assets>
+
+    <!-- Camera -->
+    <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse"></a-camera>
+
+    <!-- Image Target -->
+    <a-entity mindar-image-target="targetIndex: 0" id="target">
+      <a-entity
+        id="ar-object"
+        gltf-model="#model"
+        position="0 0 0"
+        scale="0.005 0.005 0.005"
+        rotation="0 0 0">
+      </a-entity>
+    </a-entity>
+
+  </a-scene>
+
+  <script>
+    // Hide scan hint when target is found
+    const target = document.getElementById('target');
+    const scanHint = document.getElementById('scanHint');
+
+    target.addEventListener('targetFound', () => {
+      scanHint.style.display = 'none';
+    });
+
+    target.addEventListener('targetLost', () => {
+      scanHint.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

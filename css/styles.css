@@ -1,0 +1,286 @@
+/* ═══════════════════════════════════════════════════════════
+   Campus WhispAR - Shared Styles
+   ═══════════════════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  background: #292929;
+  color: #ffffff;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SPLASH SCREEN
+   ═══════════════════════════════════════════════════════════ */
+
+.splash-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splash-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.logo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.logo-pin {
+  margin-bottom: 10px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.logo-text {
+  position: relative;
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 15px;
+}
+
+.logo-whisp {
+  font-family: monospace;
+  letter-spacing: -2px;
+}
+
+.logo-ar {
+  font-family: sans-serif;
+  font-weight: 900;
+}
+
+.logo-campus {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: white;
+  color: #292929;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.logo-ripples {
+  position: relative;
+  width: 200px;
+  height: 50px;
+}
+
+.ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+.ripple-1 {
+  width: 200px;
+  height: 30px;
+  opacity: 0.2;
+}
+
+.ripple-2 {
+  width: 180px;
+  height: 25px;
+  opacity: 0.3;
+}
+
+.ripple-3 {
+  width: 160px;
+  height: 20px;
+  opacity: 0.4;
+}
+
+.ripple-4 {
+  width: 140px;
+  height: 15px;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOME SCREEN
+   ═══════════════════════════════════════════════════════════ */
+
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.btn {
+  width: 100%;
+  padding: 18px 30px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.btn-secondary {
+  background: #2196F3;
+  color: white;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INPUT SCREEN
+   ═══════════════════════════════════════════════════════════ */
+
+.input-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border: 2px solid #555;
+  border-radius: 10px;
+  background: #333;
+  color: white;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-field:focus {
+  border-color: #4CAF50;
+}
+
+.input-field::placeholder {
+  color: #888;
+}
+
+textarea.input-field {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SENT SCREEN
+   ═══════════════════════════════════════════════════════════ */
+
+.sent-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sent-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+  text-align: center;
+}
+
+.sent-icon {
+  font-size: 80px;
+  color: #4CAF50;
+  animation: pop 0.5s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.sent-message {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.back-button:active {
+  background: rgba(255, 255, 255, 0.2);
+}

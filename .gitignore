@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# SSL Certificates (local dev only)
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+.idea/

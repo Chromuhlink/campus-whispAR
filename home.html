@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Campus WhispAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+    }
+
+    .home-tagline {
+      font-size: 25px;
+      line-height: 1.3;
+      text-align: center;
+      color: white;
+      max-width: 275px;
+      margin-bottom: 60px;
+    }
+
+    .btn-whispar {
+      width: 275px;
+      background: #cbcbcb;
+      color: black;
+      padding: 24px 0;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 400;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      transition: background 0.2s;
+    }
+
+    .btn-whispar:active {
+      background: #b0b0b0;
+    }
+
+    .home-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body class="home-screen">
+  <div class="home-container">
+    <p class="home-tagline">Post a little whisper—or see what your campus is talking about</p>
+
+    <div class="home-buttons">
+      <a href="input.html" class="btn-whispar">Post</a>
+      <a href="ar.html" class="btn-whispar">Open WhispAR board</a>
+    </div>
+  </div>
+</body>
+</html>

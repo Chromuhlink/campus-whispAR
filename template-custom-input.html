@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AR Interactive Template - Custom Image</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+  
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    
+    /* Input popup container */
+    #input-popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 999;
+      min-width: 300px;
+    }
+    
+    #input-popup.show {
+      display: block;
+      animation: popIn 0.3s ease-out;
+    }
+    
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    
+    /* Status message (shows "sent") */
+    #status-message {
+      color: #4CAF50;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+      display: none;
+    }
+    
+    #status-message.show {
+      display: block;
+    }
+    
+    /* Text input */
+    #text-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    
+    #text-input:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+    
+    /* Send button */
+    #send-button {
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    #send-button:active {
+      background: #45a049;
+    }
+    
+    /* Close button */
+    #close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    /* Fixed submit button */
+    #submit-trigger {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      width: auto;
+      height: auto;
+      max-width: 200px;
+    }
+
+    #submit-trigger:active {
+      background: #45a049;
+      transform: translateX(-50%) scale(0.95);
+    }
+
+    /* Inline input container */
+    #input-container {
+      position: fixed;
+      bottom: 30px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    #input-container input {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border: 2px solid #4CAF50;
+      border-radius: 25px;
+      outline: none;
+      background: white;
+      color: #333;
+      -webkit-appearance: none;
+      appearance: none;
+      box-sizing: border-box;
+    }
+
+    #input-container button {
+      flex: 0 0 auto;
+      padding: 12px 18px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #input-container button:active {
+      background: #45a049;
+    }
+
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 18px;
+      display: none;
+      z-index: 1000;
+    }
+
+    #toast.show {
+      display: block;
+      animation: fadeInOut 2s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Input Container (always visible) -->
+  <div id="input-container">
+    <input type="text" id="text-input" placeholder="Type your message...">
+    <button id="send-button">Send</button>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast">Sent!</div>
+  
+  <!-- 
+    ═══════════════════════════════════════════════════════════
+    🖼️ CUSTOM IMAGE ANCHOR SETUP
+    ═══════════════════════════════════════════════════════════
+    
+    BEFORE YOU START:
+    1. Go to: https://hiukim.github.io/mind-ar-js-doc/tools/compile
+    2. Upload your anchor image (PNG/JPG)
+    3. Click "Start" and wait for compilation
+    4. Download the result as "targets.mind"
+    5. Replace "your-anchor.mind" below with "targets.mind"
+  -->
+  
+  <!-- AR Scene -->
+  <a-scene
+    mindar-image="imageTargetSrc: targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no; filterMinCF: 0.0001; filterBeta: 0.01;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-assets>
+      <!-- 
+        ═══════════════════════════════════════════════════════════
+        📦 ADD YOUR 3D MODEL HERE
+        ═══════════════════════════════════════════════════════════
+        Replace "your-model.glb" with your actual file name
+      -->
+      <a-asset-item id="model" src="-y5g7kt-222007844.glb"></a-asset-item>
+    </a-assets>
+    
+    <!-- Camera -->
+    <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse"></a-camera>
+    
+    <!-- 
+      ═══════════════════════════════════════════════════════════
+      🎯 IMAGE TARGET
+      ═══════════════════════════════════════════════════════════
+      targetIndex: 0 means the first image in your .mind file
+    -->
+    <a-entity mindar-image-target="targetIndex: 0" id="target">
+      
+      <!-- 
+        ═══════════════════════════════════════════════════════════
+        🎨 3D OBJECT SETTINGS
+        ═══════════════════════════════════════════════════════════
+        - position: X Y Z (left/right, up/down, forward/back)
+        - scale: X Y Z (size multiplier)
+        - rotation: X Y Z (degrees)
+      -->
+      <a-entity
+        id="interactive-object"
+        gltf-model="#model"
+        position="0 0 0"
+        scale="0.005 0.005 0.005"
+        rotation="0 0 0">
+      </a-entity>
+      
+    </a-entity>
+    
+  </a-scene>
+  
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // 🎮 INTERACTION LOGIC
+    // ═══════════════════════════════════════════════════════════
+
+    const inputContainer = document.getElementById('input-container');
+    const textInput = document.getElementById('text-input');
+    const sendButton = document.getElementById('send-button');
+    const toast = document.getElementById('toast');
+
+    // Handle send button
+    sendButton.addEventListener('click', () => {
+      const message = textInput.value.trim();
+
+      if (message) {
+        console.log('Message sent:', message);
+
+        // Show toast
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2000);
+
+        // Clear input
+        textInput.value = '';
+
+        // ═══════════════════════════════════════════════════════════
+        // 💾 ADD YOUR CUSTOM CODE HERE
+        // ═══════════════════════════════════════════════════════════
+        // This is where you can send the message to a server, etc.
+      }
+    });
+
+    // Handle Enter key in input
+    textInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
