@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Message Sent - Campus WhispAR</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -110,12 +115,37 @@
   <a href="home.html" class="home-link">Return to Home</a>
 
   <script>
-    // The message was stored in localStorage from input.html
-    // It will be sent to Firebase when we set that up
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE06YuzOKgQh-5pwUMeZderuO_Cuc_Ih0",
+      authDomain: "campus-whispar.firebaseapp.com",
+      projectId: "campus-whispar",
+      storageBucket: "campus-whispar.firebasestorage.app",
+      messagingSenderId: "258530045606",
+      appId: "1:258530045606:web:cf7fbaab73835c1af24e67",
+      measurementId: "G-21S2PKM1MZ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Save message to Firebase
     const pendingMessage = localStorage.getItem('pendingMessage');
     if (pendingMessage) {
-      console.log('Message to save:', pendingMessage);
-      // Firebase save will happen here
+      console.log('Saving message to Firebase:', pendingMessage);
+
+      db.collection('whispers').add({
+        message: pendingMessage,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        console.log('Message successfully saved to Firebase!');
+        // Clear the pending message
+        localStorage.removeItem('pendingMessage');
+      })
+      .catch((error) => {
+        console.error('Error saving message:', error);
+      });
     }
   </script>
 </body>
