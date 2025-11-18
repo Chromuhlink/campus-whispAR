@@ -116,14 +116,24 @@
       </a-entity>
 
       <!-- Whisper text positioned in front of the billboard -->
+      <!-- Semi-transparent background for text -->
+      <a-plane
+        id="text-background"
+        position="0 0.05 0.15"
+        width="1.8"
+        height="0.4"
+        color="#000000"
+        opacity="0.15">
+      </a-plane>
+
       <a-text
         id="whisper-text"
         value="Loading whispers..."
-        position="0 0 0.15"
+        position="0 0.05 0.16"
         align="center"
-        width="2"
+        width="1.6"
         color="#ffffff"
-        wrap-count="40">
+        wrap-count="35">
       </a-text>
     </a-entity>
 
