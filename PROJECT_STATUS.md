@@ -1,12 +1,17 @@
 # Campus WhispAR - Project Status
 
-**Last Updated:** November 17, 2025
+**Last Updated:** November 18, 2025
 
 ---
 
-## Current State: Core App Flow Complete
+## Current State: Firebase Setup Complete - Ready for Config
 
-All UI screens built from Figma designs. Ready for Firebase integration.
+- ✅ Core app flow complete
+- ✅ GitHub repo created and pushed
+- ✅ Firebase SDK installed (npm)
+- ✅ Firebase config files created
+- ✅ Firebase MCP server configured for Claude Code
+- 🔄 **NEXT:** Create Firebase project & add credentials to config
 
 ---
 
@@ -20,10 +25,12 @@ All UI screens built from Figma designs. Ready for Firebase integration.
 ├── sent.html               ✅ "Message Sent!" confirmation + View AR button
 ├── ar.html                 ✅ Clean AR viewport (no input UI)
 ├── template-custom-input.html  (old version, can delete)
+├── package.json            ✅ npm config with Firebase SDK
 ├── /css
 │   └── styles.css          ✅ Shared styles
 ├── /js
-│   └── (empty - ready for Firebase)
+│   ├── firebase-config.js  ✅ Firebase initialization (needs credentials)
+│   └── messages.js         ✅ Firestore message operations
 ├── /assets
 │   ├── targets.mind        ✅ AR anchor file
 │   └── -y5g7kt-222007844.glb  ✅ 3D model
@@ -42,6 +49,7 @@ Splash (2.5s) → Home → [Post] → Input → Sent → AR
 
 ## What's Done
 
+### Core App Features
 - [x] Project structure created
 - [x] Splash screen with WhispAR logo (matches Figma)
 - [x] Home screen with tagline and two buttons (matches Figma)
@@ -53,17 +61,34 @@ Splash (2.5s) → Home → [Post] → Input → Sent → AR
 - [x] Josefin Sans font integrated
 - [x] Dark theme (#292929 background)
 
+### Development Setup (Nov 18, 2025)
+- [x] GitHub repo created: https://github.com/Chromuhlink/campus-whispAR
+- [x] Git initialized and code pushed
+- [x] npm project initialized
+- [x] Firebase SDK installed (v10.7.1)
+- [x] Firebase config files created (`firebase-config.js`, `messages.js`)
+- [x] Firebase MCP server configured in Claude Code
+- [x] .gitignore updated for node_modules and Firebase
+- [x] Firebase credentials added to config (user completed)
+
 ---
 
 ## What's Next
 
-### 1. Firebase Integration (Priority)
-- Create Firebase project (if not done)
-- Add Firebase config to `/js/firebase-config.js`
-- Save messages to Firestore on send
-- Optionally: Display messages in AR view
+### 1. Firebase Integration (IN PROGRESS)
+- [x] Create Firebase project ✅
+- [x] Add Firebase config to `/js/firebase-config.js` ✅
+- [ ] Enable Firestore Database in Firebase Console
+- [ ] Connect input.html to saveMessage() function
+- [ ] Test message saving to Firestore
+- [ ] Optionally: Display messages in AR view
 
-### 2. Future Features (mentioned but not started)
+### 2. Deployment
+- [ ] Deploy to Netlify (connected to GitHub repo)
+- [ ] Test HTTPS AR features on live site
+- [ ] Verify Firebase works in production
+
+### 3. Future Features (mentioned but not started)
 - Photo/share function for AR viewport
 - AR object integration (user has separate doc for this)
 
@@ -105,9 +130,32 @@ Open: http://localhost:8000
 Copy this to start a new conversation:
 
 ```
-Working on campus_whispar AR app. Core flow built:
-- Splash → Home → Input → Sent → AR viewport
-- All pages match Figma designs
-- Need to add Firebase integration to save messages
-- Check PROJECT_STATUS.md for full details
+Working on campus_whispar AR app.
+
+Current state:
+- GitHub repo: https://github.com/Chromuhlink/campus-whispAR
+- Core app flow complete (Splash → Home → Input → Sent → AR)
+- Firebase SDK installed and configured with credentials
+- Firebase MCP server set up in Claude Code
+
+Next steps:
+- Enable Firestore in Firebase Console
+- Connect input.html to Firebase saveMessage()
+- Deploy to Netlify for testing
+
+Check PROJECT_STATUS.md for full details.
 ```
+
+---
+
+## Important Notes After Terminal Restart
+
+**Firebase MCP Server:**
+- Location: `~/.config/claude-code/mcp.json`
+- Restart Claude Code to activate Firebase tools
+
+**Firebase Console Steps:**
+1. Go to: https://console.firebase.google.com/project/campus-whispar
+2. Build → Firestore Database → Create database
+3. Start in test mode
+4. Choose location (us-central recommended)
