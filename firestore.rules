@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Whispers collection - anyone can read, anyone can write
+    match /whispers/{whisperId} {
+      allow read: if true;
+      allow create: if request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() <= 280;
+      allow update, delete: if false; // Prevent editing/deleting whispers
+    }
+  }
+}
