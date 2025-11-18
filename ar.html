@@ -9,6 +9,10 @@
   <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -107,24 +111,83 @@
         id="ar-object"
         gltf-model="#model"
         position="0 0 0"
-        scale="0.005 0.005 0.005"
+        scale="0.0085 0.0085 0.0085"
         rotation="0 0 0">
       </a-entity>
+
+      <!-- Whisper text positioned in front of the billboard -->
+      <a-text
+        id="whisper-text"
+        value="Loading whispers..."
+        position="0 0 0.15"
+        align="center"
+        width="2"
+        color="#ffffff"
+        wrap-count="40">
+      </a-text>
     </a-entity>
 
   </a-scene>
 
   <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE06YuzOKgQh-5pwUMeZderuO_Cuc_Ih0",
+      authDomain: "campus-whispar.firebaseapp.com",
+      projectId: "campus-whispar",
+      storageBucket: "campus-whispar.firebasestorage.app",
+      messagingSenderId: "258530045606",
+      appId: "1:258530045606:web:cf7fbaab73835c1af24e67",
+      measurementId: "G-21S2PKM1MZ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     // Hide scan hint when target is found
     const target = document.getElementById('target');
     const scanHint = document.getElementById('scanHint');
 
+    // Fetch and display random whisper message
+    async function updateWhisperText() {
+      try {
+        const snapshot = await db.collection('whispers').get();
+
+        if (snapshot.empty) {
+          document.querySelector('#whisper-text').setAttribute('value', 'No whispers yet...');
+          return;
+        }
+
+        const whispers = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        // Get a random whisper
+        const randomWhisper = whispers[Math.floor(Math.random() * whispers.length)];
+
+        // Update the text element
+        document.querySelector('#whisper-text').setAttribute('value', randomWhisper.message || randomWhisper.text || 'Empty whisper');
+      } catch (error) {
+        console.error('Error fetching whispers:', error);
+        document.querySelector('#whisper-text').setAttribute('value', 'Error loading whispers');
+      }
+    }
+
+    // Update whisper every 10 seconds when target is visible
+    let updateInterval;
+
     target.addEventListener('targetFound', () => {
       scanHint.style.display = 'none';
+      updateWhisperText();
+      updateInterval = setInterval(updateWhisperText, 10000);
     });
 
     target.addEventListener('targetLost', () => {
       scanHint.style.display = 'block';
+      if (updateInterval) {
+        clearInterval(updateInterval);
+      }
     });
   </script>
 </body>
