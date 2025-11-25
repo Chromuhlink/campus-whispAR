@@ -92,7 +92,7 @@
 
   <!-- AR Scene -->
   <a-scene
-    mindar-image="imageTargetSrc: assets/targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no; filterMinCF: 0.001; filterBeta: 0.1; warmupTolerance: 5; missTolerance: 5;"
+    mindar-image="imageTargetSrc: assets/targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no; filterMinCF: 0.0001; filterBeta: 1000; warmupTolerance: 2; missTolerance: 2;"
     color-space="sRGB"
     renderer="colorManagement: true, physicallyCorrectLights"
     vr-mode-ui="enabled: false"
@@ -150,11 +150,7 @@
       ctx.fillStyle = '#292929'; // Dark background to match app theme
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // 2. Draw text
-      ctx.save();
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1); // Keep the flip for backward text fix
-      
+      // 2. Draw text (no transform needed - draw normally)
       ctx.fillStyle = '#ffffff'; // White text
       ctx.font = 'bold 80px "Josefin Sans", Arial';
       ctx.textAlign = 'center';
@@ -187,11 +183,9 @@
         ctx.fillText(l, canvas.width/2, startY + (i * lineHeight));
       });
 
-      ctx.restore();
-
       // 3. Create texture
       const texture = new THREE.CanvasTexture(canvas);
-      texture.flipY = false;
+      texture.flipY = true; // Standard orientation for Three.js textures
 
       // 4. Apply to model
       const mesh = arObject.getObject3D('mesh');
