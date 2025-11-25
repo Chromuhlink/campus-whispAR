@@ -111,30 +111,9 @@
         id="ar-object"
         gltf-model="#model"
         position="0 0 0"
-        scale="0.017 0.017 0.017"
+        scale="0.1 0.1 0.1"
         rotation="0 0 0">
       </a-entity>
-
-      <!-- Whisper text positioned in front of the billboard -->
-      <!-- Semi-transparent background for text -->
-      <a-plane
-        id="text-background"
-        position="0 0.05 0.15"
-        width="1.8"
-        height="0.4"
-        color="#000000"
-        opacity="0.15">
-      </a-plane>
-
-      <a-text
-        id="whisper-text"
-        value="Loading whispers..."
-        position="0 0.05 0.16"
-        align="center"
-        width="1.6"
-        color="#ffffff"
-        wrap-count="35">
-      </a-text>
     </a-entity>
 
   </a-scene>
@@ -157,14 +136,95 @@
     // Hide scan hint when target is found
     const target = document.getElementById('target');
     const scanHint = document.getElementById('scanHint');
+    const billboard = document.querySelector('#ar-object');
+
+    // Canvas texture setup
+    let canvas, ctx, updateTextTexture;
+
+    // Wait for model to load
+    billboard.addEventListener('model-loaded', () => {
+      console.log('Model loaded, setting up canvas texture');
+
+      // Create canvas for text rendering
+      canvas = document.createElement('canvas');
+      canvas.width = 2048;
+      canvas.height = 1024;
+      ctx = canvas.getContext('2d');
+
+      // Function to update text texture on the model
+      updateTextTexture = (message) => {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw semi-transparent background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Set text properties
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 80px Josefin Sans, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Word wrap function
+        const maxWidth = canvas.width - 200;
+        const lineHeight = 100;
+        const x = canvas.width / 2;
+        let y = canvas.height / 2;
+
+        const words = message.split(' ');
+        let line = '';
+        const lines = [];
+
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line + words[i] + ' ';
+          const metrics = ctx.measureText(testLine);
+          const testWidth = metrics.width;
+
+          if (testWidth > maxWidth && i > 0) {
+            lines.push(line);
+            line = words[i] + ' ';
+          } else {
+            line = testLine;
+          }
+        }
+        lines.push(line);
+
+        // Center vertically
+        y = (canvas.height - (lines.length * lineHeight)) / 2 + lineHeight / 2;
+
+        // Draw each line
+        lines.forEach((line, index) => {
+          ctx.fillText(line, x, y + (index * lineHeight));
+        });
+
+        // Apply texture to model
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+
+        billboard.object3D.traverse((node) => {
+          if (node.isMesh) {
+            node.material.map = texture;
+            node.material.needsUpdate = true;
+          }
+        });
+
+        console.log('Text texture updated:', message);
+      };
+
+      // Initial load
+      fetchAndUpdateWhisper();
+    });
 
     // Fetch and display random whisper message
-    async function updateWhisperText() {
+    async function fetchAndUpdateWhisper() {
       try {
         const snapshot = await db.collection('whispers').get();
 
         if (snapshot.empty) {
-          document.querySelector('#whisper-text').setAttribute('value', 'No whispers yet...');
+          if (updateTextTexture) {
+            updateTextTexture('No whispers yet...');
+          }
           return;
         }
 
@@ -175,12 +235,17 @@
 
         // Get a random whisper
         const randomWhisper = whispers[Math.floor(Math.random() * whispers.length)];
+        const message = randomWhisper.message || randomWhisper.text || 'Empty whisper';
 
-        // Update the text element
-        document.querySelector('#whisper-text').setAttribute('value', randomWhisper.message || randomWhisper.text || 'Empty whisper');
+        // Update canvas texture
+        if (updateTextTexture) {
+          updateTextTexture(message);
+        }
       } catch (error) {
         console.error('Error fetching whispers:', error);
-        document.querySelector('#whisper-text').setAttribute('value', 'Error loading whispers');
+        if (updateTextTexture) {
+          updateTextTexture('Error loading whispers');
+        }
       }
     }
 
@@ -189,8 +254,8 @@
 
     target.addEventListener('targetFound', () => {
       scanHint.style.display = 'none';
-      updateWhisperText();
-      updateInterval = setInterval(updateWhisperText, 10000);
+      fetchAndUpdateWhisper();
+      updateInterval = setInterval(fetchAndUpdateWhisper, 10000);
     });
 
     target.addEventListener('targetLost', () => {
