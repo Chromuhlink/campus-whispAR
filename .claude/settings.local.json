@@ -4,7 +4,10 @@
       "Bash(ipconfig getifaddr:*)",
       "Bash(python3:*)",
       "mcp__figma-remote-mcp__get_design_context",
-      "mcp__figma-remote-mcp__get_screenshot"
+      "mcp__figma-remote-mcp__get_screenshot",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []
