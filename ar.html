@@ -92,7 +92,7 @@
 
   <!-- AR Scene -->
   <a-scene
-    mindar-image="imageTargetSrc: assets/targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no; filterMinCF: 0.0001; filterBeta: 0.01;"
+    mindar-image="imageTargetSrc: assets/targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no; filterMinCF: 0.001; filterBeta: 0.1; warmupTolerance: 5; missTolerance: 5;"
     color-space="sRGB"
     renderer="colorManagement: true, physicallyCorrectLights"
     vr-mode-ui="enabled: false"
@@ -112,15 +112,15 @@
         id="ar-object"
         gltf-model="#model"
         position="0 0 0"
-        scale="0.3 0.3 0.3"
+        scale="0.8 0.8 0.8"
         rotation="0 0 0">
       </a-entity>
 
-      <!-- Floating text overlay (positioned in front of brick wall) -->
+      <!-- Text overlay positioned directly on wall surface -->
       <a-text
         id="whisper-text"
         value="Loading whispers..."
-        position="0 0 0.3"
+        position="0 0.15 0.05"
         align="center"
         width="2.5"
         color="#ffffff"
