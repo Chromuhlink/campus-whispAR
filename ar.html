@@ -142,35 +142,62 @@
     // Canvas setup for Method 2
     const canvas = document.createElement('canvas');
     canvas.width = 1024;
-    canvas.height = 1024;
+    canvas.height = 512;
     const ctx = canvas.getContext('2d');
 
     function updateTexture(message) {
-      // 1. Draw background (optional, helps visibility)
-      // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-      // ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // 1. Draw background 
+      ctx.fillStyle = '#292929'; // Dark background to match app theme
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // 2. Draw text
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous
+      ctx.save();
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1); // Keep the flip for backward text fix
+      
       ctx.fillStyle = '#ffffff'; // White text
-      ctx.font = 'bold 100px Arial';
+      ctx.font = 'bold 80px "Josefin Sans", Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
-      // Simple word wrap or single line
-      ctx.fillText(message, canvas.width/2, canvas.height/2);
+      // Word wrap logic
+      const words = message.split(' ');
+      let line = '';
+      let lines = [];
+      const maxWidth = canvas.width - 100;
+      
+      for(let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          lines.push(line);
+          line = words[n] + ' ';
+        } else {
+          line = testLine;
+        }
+      }
+      lines.push(line);
+
+      // Draw lines
+      const lineHeight = 100;
+      const startY = (canvas.height - (lines.length * lineHeight)) / 2 + (lineHeight / 2);
+      
+      lines.forEach((l, i) => {
+        ctx.fillText(l, canvas.width/2, startY + (i * lineHeight));
+      });
+
+      ctx.restore();
 
       // 3. Create texture
       const texture = new THREE.CanvasTexture(canvas);
-      
+      texture.flipY = false;
+
       // 4. Apply to model
-      // Wait for model to load if not ready
       const mesh = arObject.getObject3D('mesh');
       if (mesh) {
         mesh.traverse((node) => {
           if (node.isMesh) {
-            // Create a new material preserving the old map but adding our canvas as an overlay?
-            // Or simple replacement:
             node.material.map = texture;
             node.material.needsUpdate = true;
           }
